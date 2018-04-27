@@ -7,13 +7,15 @@ class direction(Enum):
     LEFT = -1
     RIGHT = 1
 
-class Projectile:
+class Projectile(pygame.sprite.Sprite):
 
-    def __init__(self, screen, player_rect, player_dir):
-        self.screen = screen
+    def __init__(self, player_rect, player_dir):
+        pygame.sprite.Sprite.__init__(self)
         self.speed = 10
-        self.sprite = pygame.image.load("turnip.png")
-        self.rect = self.sprite.get_rect()
+        self.image = pygame.image.load("turnip.png")
+        self.rect = self.image.get_rect()
+
+        ''' Initialize position and direction '''
         self.rect.x = player_rect.x
         self.rect.y = player_rect.y
         if player_dir == player.direction.RIGHT:
@@ -28,14 +30,9 @@ class Projectile:
             self.rect.x = player_rect.x + (player_rect.width*player.Player.Scale)
             self.rect.y = player_rect.y + (player_rect.height*player.Player.Scale/2)
 
-        self.screen.blit(self.sprite, self.rect)
-
 
     def update(self):
         if self.dir == direction.LEFT:
             self.rect.x -= self.speed
         elif self.dir == direction.RIGHT:
             self.rect.x += self.speed
-
-
-        self.screen.blit(self.sprite, self.rect)
