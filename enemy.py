@@ -8,6 +8,7 @@ class Enemy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.speed = 3
         self.destiination = destination
+        self. damage = 1
 
         self.image = pygame.image.load('grass.png')
         self.rect = self.image.get_rect()

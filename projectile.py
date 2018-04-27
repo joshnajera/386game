@@ -17,6 +17,9 @@ class Projectile(pygame.sprite.Sprite):
         self.timeToLive = 1
         self.initTime = time.time()
         self.image = pygame.image.load("turnip.png")
+        scale = 2
+        width, height = self.image.get_size()
+        self.image = pygame.transform.scale(self.image, (width*scale, height*scale))
         self.rect = self.image.get_rect()
 
         ''' Initialize position and direction '''

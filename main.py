@@ -1,7 +1,7 @@
 import pygame
 import random
 import time
-import player, projectile, enemy
+import player, projectile, enemy, flowers
 from pygame.locals import *
 import sys
 from math import sqrt
@@ -12,7 +12,6 @@ pygame.init()
 pygame.display.set_caption("This is a test")
 clock = pygame.time.Clock()
 
-black = 0, 0, 0
 green = 0, 128, 0
 
 ''' OBJECT GROUPS '''
@@ -22,17 +21,26 @@ friendlies = pygame.sprite.Group()
 def spawnNewEnemy():
     randx = random.randrange(0, width)
     randy = random.randrange(0, height)
-    return enemy.Enemy((randx, randy), (0,0))
+    dest = random.choice(friendlies.sprites()).rect
+    return enemy.Enemy((randx, randy), (dest.x, dest.y))
 
 def main():
     """ Runs the game """
     screen = pygame.display.set_mode(size)
     playerCharacter = player.Player(screen)
-    enemy_obj = enemy.Enemy((400,400), (0, 0))
+    # enemy_obj = enemy.Enemy((400,400), (0, 0))
+    # enemies.add(enemy_obj)
     friendlies.add(playerCharacter)
-    enemies.add(enemy_obj)
+    friendlies.add(flowers.Flowers((0,0)))
 
-    testTimer = timer(2.0, spawnNewEnemy)
+    ''' GENERATE FLOWER BED '''
+    rows, columns = 3, 3
+    startx, starty = width/2 - (flowers.width*rows/2), height/2 - (flowers.height*columns/2)
+    for i in range(columns):
+        for j in range(rows):
+            friendlies.add(flowers.Flowers((startx + j*flowers.width, starty + i*flowers.height)))
+
+    testTimer = timer(5.0, spawnNewEnemy)
     ''' MAIN LOOP '''
     while 1:
         newObj = testTimer.update()
@@ -66,6 +74,14 @@ def main():
             if isinstance(obj, projectile.Projectile):
                 enemies.remove(collision)
                 del collision
+
+        for obj in enemies:
+            collision = pygame.sprite.spritecollideany(obj, friendlies)
+            if not collision:
+                continue
+
+            if isinstance(collision, flowers.Flowers):
+                collision.hit(obj.damage)
         
         ''' OBJECT RENDERING '''
         enemies.draw(screen)
@@ -86,8 +102,6 @@ class timer:
         if self.time >= self.duration:
             self.time %= self.duration
             return self.fn()
-
-
 
 if __name__ == "__main__":
     main()
