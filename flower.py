@@ -11,11 +11,11 @@ width, height = (dim*scale for dim in image.get_size())
 image = pygame.transform.scale(image, (width, height))
 image_hit = pygame.transform.scale(image_hit, (width, height))
 
-class Flowers(pygame.sprite.Sprite):
+class Flower(pygame.sprite.Sprite):
 
     def __init__(self, location: (float, float)):
         pygame.sprite.Sprite.__init__(self)
-        self.life = 10
+        self.life = 20
         self.blink = False
         self.blinkCounter = 0
         self.image = image
@@ -35,10 +35,12 @@ class Flowers(pygame.sprite.Sprite):
 
     def update(self):
         if self.blink:
-            if self.blinkCounter < 5:
+            if self.blinkCounter < 10:
                 self.image = image_hit
+                self.blinkCounter += 1
+            elif self.blinkCounter < 20:
+                self.image = image
                 self.blinkCounter += 1
             else:
                 self.blinkCounter = 0
-                self.image = image
                 self.blink = False

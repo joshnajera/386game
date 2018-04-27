@@ -1,4 +1,5 @@
 import pygame
+import inspect
 import time
 import player
 from enum import Enum
@@ -23,20 +24,14 @@ class Projectile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         ''' Initialize position and direction '''
-        self.rect.x = player_rect.x
-        self.rect.y = player_rect.y
+        player_obj = inspect.currentframe().f_back.f_locals['self']
+        self.rect.x = player_rect.x + player_obj.image.get_size()[0]/2
+        self.rect.y = player_rect.y + player_obj.image.get_size()[1]/2
+
         if player_dir == player.direction.RIGHT:
             self.dir = direction.RIGHT  
         else:
             self.dir = direction.LEFT
-
-        if self.dir == direction.LEFT:
-            self.rect.x = player_rect.x - self.rect.width
-            self.rect.y = self.rect.height + (player_rect.y)
-        else:
-            self.rect.x = player_rect.x + (player_rect.width*player.Player.Scale)
-            self.rect.y = player_rect.y + (player_rect.height*player.Player.Scale/2)
-
 
     def update(self):
         if self.dir == direction.LEFT:
@@ -47,4 +42,3 @@ class Projectile(pygame.sprite.Sprite):
         if (time.time() - self.initTime) > self.timeToLive:
             pygame.sprite.Sprite.kill(self)
             del self
-        

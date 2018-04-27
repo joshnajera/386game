@@ -1,7 +1,7 @@
 import pygame
 import random
 import time
-import player, projectile, enemy, flowers
+import player, projectile, enemy, flower
 from pygame.locals import *
 import sys
 from math import sqrt
@@ -17,12 +17,18 @@ green = 0, 128, 0
 ''' OBJECT GROUPS '''
 enemies = pygame.sprite.Group()
 friendlies = pygame.sprite.Group()
+flowers = pygame.sprite.Group()
+
 
 def spawnNewEnemy():
     randx = random.randrange(0, width)
     randy = random.randrange(0, height)
-    dest = random.choice(friendlies.sprites()).rect
-    return enemy.Enemy((randx, randy), (dest.x, dest.y))
+    try:
+        dest = random.choice(flowers.sprites())
+        return enemy.Enemy((randx, randy), dest)
+    except:
+        print("Flowers all gone")
+
 
 def main():
     """ Runs the game """
@@ -31,16 +37,16 @@ def main():
     # enemy_obj = enemy.Enemy((400,400), (0, 0))
     # enemies.add(enemy_obj)
     friendlies.add(playerCharacter)
-    friendlies.add(flowers.Flowers((0,0)))
+    # flowers.add(flower.Flower((0,0)))
 
     ''' GENERATE FLOWER BED '''
     rows, columns = 3, 3
-    startx, starty = width/2 - (flowers.width*rows/2), height/2 - (flowers.height*columns/2)
+    startx, starty = width/2 - (flower.width*rows/2), height/2 - (flower.height*columns/2)
     for i in range(columns):
         for j in range(rows):
-            friendlies.add(flowers.Flowers((startx + j*flowers.width, starty + i*flowers.height)))
+            flowers.add(flower.Flower((startx + j*flower.width, starty + i*flower.height)))
 
-    testTimer = timer(5.0, spawnNewEnemy)
+    testTimer = timer(3.0, spawnNewEnemy)
     ''' MAIN LOOP '''
     while 1:
         newObj = testTimer.update()
@@ -63,27 +69,37 @@ def main():
         ''' UPDATES '''
         friendlies.update()
         enemies.update()
+        flowers.update()
 
         ''' COLLISIONS '''
         for obj in friendlies:
             collision = pygame.sprite.spritecollideany(obj, enemies)
             if not collision:
                 continue
+            print(obj)
 
             ##  Projectile Collision
             if isinstance(obj, projectile.Projectile):
                 enemies.remove(collision)
                 del collision
-
-        for obj in enemies:
-            collision = pygame.sprite.spritecollideany(obj, friendlies)
+        
+        for obj in friendlies:
+            collision = pygame.sprite.spritecollideany(obj, flowers)
             if not collision:
                 continue
+            print(collision)
+            if isinstance(obj, player.Player):
+                # obj.rect.move((-obj.speed[0], -obj.speed[1]))
+                obj.speed = list(map(lambda x: x*.5, obj.speed))
 
-            if isinstance(collision, flowers.Flowers):
-                collision.hit(obj.damage)
+        # for enemy in enemies:
+        #     collision = pygame.sprite.spritecollideany(enemy, flowers)
+        #     if not collision:
+        #         continue
+        #     collision.hit(enemy.damage)
         
         ''' OBJECT RENDERING '''
+        flowers.draw(screen)
         enemies.draw(screen)
         friendlies.draw(screen)
         pygame.display.update() # pygame.display.flip() is another way to do this

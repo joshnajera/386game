@@ -33,13 +33,11 @@ class Player(pygame.sprite.Sprite):
         self.ani_counter = 0
         self.ani_frame = 0
 
-        self.image = pygame.image.load(self.ani_l[0])
+        self.image = self.loadFrame('l')
         self.rect = self.image.get_rect()
-        self.width, self.height = self.image.get_size()
 
         # self.image = pygame.transform.scale(self.image, (self.width*self.scale, self.height*self.scale))
         # self.rect = self.rect.inflate((self.scale, self.scale))
-        self.update()
     
     def loadFrame(self, dir: chr):
         if dir == 'r':
@@ -48,7 +46,8 @@ class Player(pygame.sprite.Sprite):
             img = pygame.image.load(self.ani_l[self.ani_frame])
         else:
             print("ERROR")
-        return pygame.transform.scale(img, (self.width*self.scale, self.height*self.scale))
+        width, height = img.get_size()
+        return pygame.transform.scale(img, (width*self.scale, height*self.scale))
 
 
     def update(self):
@@ -63,7 +62,8 @@ class Player(pygame.sprite.Sprite):
             self.direction = direction.LEFT
         elif self.speed[0] > 0:
             self.direction = direction.RIGHT
-        else:
+        
+        if self.speed[0] == 0 and self.speed[1] == 0:
             self.ani_frame = 0
 
         ##  Set frame based off direction
@@ -76,6 +76,9 @@ class Player(pygame.sprite.Sprite):
             self.reload_time = (self.reload_time+1) % self.reload_speed
             if self.reload_time == 0:
                 self.reloading = False
+        
+        self.rect.x += self.speed[0]
+        self.rect.y += self.speed[1]
 
     def processInput(self, keys):
 
@@ -113,21 +116,21 @@ class Player(pygame.sprite.Sprite):
             bullet = projectile.Projectile(self.rect, self.direction)
 
         ##  Move acording to speed
-        self.rect = self.rect.move(self.speed)
+        # self.rect = self.rect.move(self.speed)
 
         ##  Checking bounds
         if self.rect.x < 0:
             self.rect.x = 0
             self.speed[0] = 0 
-        if self.rect.x > (Player.width - (self.rect.width*self.scale)): 
-            self.rect.x = (Player.width - (self.rect.width*self.scale))
+        if self.rect.x > (Player.width - self.rect.width): 
+            self.rect.x = (Player.width - self.rect.width)
             self.speed[0] = 0 
 
         if self.rect.y < 0:
             self.rect.y = 0
             self.speed[1] = 0 
-        if self.rect.y > (Player.height - (self.rect.height*self.scale)): 
-            self.rect.y = (Player.height - (self.rect.height*self.scale))
+        if self.rect.y > (Player.height - self.rect.height): 
+            self.rect.y = (Player.height - self.rect.height)
             self.speed[1] = 0 
 
         return bullet
