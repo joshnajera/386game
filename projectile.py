@@ -1,6 +1,6 @@
 import pygame
+import time
 import player
-from pygame import *
 from enum import Enum
 
 class direction(Enum):
@@ -8,10 +8,14 @@ class direction(Enum):
     RIGHT = 1
 
 class Projectile(pygame.sprite.Sprite):
+    """ Turnip Bullet """
 
     def __init__(self, player_rect, player_dir):
+        """ Setup """
         pygame.sprite.Sprite.__init__(self)
         self.speed = 10
+        self.timeToLive = 1
+        self.initTime = time.time()
         self.image = pygame.image.load("turnip.png")
         self.rect = self.image.get_rect()
 
@@ -36,3 +40,8 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.x -= self.speed
         elif self.dir == direction.RIGHT:
             self.rect.x += self.speed
+        
+        if (time.time() - self.initTime) > self.timeToLive:
+            pygame.sprite.Sprite.kill(self)
+            del self
+        

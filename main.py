@@ -1,20 +1,10 @@
 import pygame
-import player, projectile
+import random
+import time
+import player, projectile, enemy
 from pygame.locals import *
 import sys
 from math import sqrt
-
-class grass(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('grass.png')
-        self.rect = self.image.get_rect()
-
-        ## Placing the object in the center
-        self.rect.x = width/2 - self.rect.width/2
-        self.rect.y = height/2 - self.rect.height/2
-        # screen.blit(grass, grass_rect) # Draw object
-
 
 ''' GAME PROPERTIES '''
 size = width, height = 800, 800
@@ -29,16 +19,26 @@ green = 0, 128, 0
 enemies = pygame.sprite.Group()
 friendlies = pygame.sprite.Group()
 
+def spawnNewEnemy():
+    randx = random.randrange(0, width)
+    randy = random.randrange(0, height)
+    return enemy.Enemy((randx, randy), (0,0))
+
 def main():
     """ Runs the game """
     screen = pygame.display.set_mode(size)
     playerCharacter = player.Player(screen)
-    grass_obj = grass()
+    enemy_obj = enemy.Enemy((400,400), (0, 0))
     friendlies.add(playerCharacter)
-    enemies.add(grass_obj)
+    enemies.add(enemy_obj)
 
+    testTimer = timer(2.0, spawnNewEnemy)
     ''' MAIN LOOP '''
     while 1:
+        newObj = testTimer.update()
+        if newObj:
+            enemies.add(newObj)
+
         screen.fill(green) # Draw background
 
         ''' EVENTS '''
@@ -53,9 +53,8 @@ def main():
                 friendlies.add(newObj)
         
         ''' UPDATES '''
-        # playerCharacter.update(0)
         friendlies.update()
-        # grass_obj.update(0)
+        enemies.update()
 
         ''' COLLISIONS '''
         for obj in friendlies:
@@ -65,7 +64,6 @@ def main():
 
             ##  Projectile Collision
             if isinstance(obj, projectile.Projectile):
-                print(obj,' is of class: ', type(obj))
                 enemies.remove(collision)
                 del collision
         
@@ -73,7 +71,22 @@ def main():
         enemies.draw(screen)
         friendlies.draw(screen)
         pygame.display.update() # pygame.display.flip() is another way to do this
-        clock.tick(60)          #Defines FPS/refresh time
+        clock.tick(60)          # Defines FPS/refresh time
+
+class timer:
+    def __init__(self, duration: float, fn):
+        self.currentTime = time.time()
+        self.time = 0.0
+        self.duration = duration
+        self.fn = fn
+    
+    def update(self):
+        self.time += time.time() - self.currentTime
+        self.currentTime = time.time()
+        if self.time >= self.duration:
+            self.time %= self.duration
+            return self.fn()
+
 
 
 if __name__ == "__main__":
