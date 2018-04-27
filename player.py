@@ -1,6 +1,11 @@
 import sys, glob, pygame, math, projectile
 from enum import Enum
 
+ani_l = glob.glob("bun/bunl*")
+ani_r = glob.glob("bun/bunr*")
+ani_l.sort()
+ani_r.sort()
+
 class direction(Enum):
     LEFT = -1
     RIGHT = 1
@@ -23,10 +28,8 @@ class Player(pygame.sprite.Sprite):
         self.acceleration = .3
         self.direction = direction.RIGHT
 
-        self.ani_l = glob.glob("bun/bunl*")
-        self.ani_r = glob.glob("bun/bunr*")
-        self.ani_l.sort()
-        self.ani_r.sort()
+        self.ani_l = ani_l
+        self.ani_r = ani_r
 
         self.ani_max = len(self.ani_l) - 1
         self.ani_speed = 10

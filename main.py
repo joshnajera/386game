@@ -25,6 +25,7 @@ def spawnNewEnemy():
     randy = random.randrange(0, height)
     try:
         dest = random.choice(flowers.sprites())
+        print(dest)
         return enemy.Enemy((randx, randy), dest)
     except:
         print("Flowers all gone")
@@ -63,7 +64,7 @@ def main():
         keys = pygame.key.get_pressed()
         if keys:
             newObj = playerCharacter.processInput(keys)
-            if newObj:        # Store new objects belonging to player
+            if newObj:        # Store new player projectiles
                 friendlies.add(newObj)
         
         ''' UPDATES '''
@@ -76,7 +77,6 @@ def main():
             collision = pygame.sprite.spritecollideany(obj, enemies)
             if not collision:
                 continue
-            print(obj)
 
             ##  Projectile Collision
             if isinstance(obj, projectile.Projectile):
@@ -87,7 +87,6 @@ def main():
             collision = pygame.sprite.spritecollideany(obj, flowers)
             if not collision:
                 continue
-            print(collision)
             if isinstance(obj, player.Player):
                 # obj.rect.move((-obj.speed[0], -obj.speed[1]))
                 obj.speed = list(map(lambda x: x*.5, obj.speed))
