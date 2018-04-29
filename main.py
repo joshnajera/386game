@@ -25,9 +25,9 @@ def spawnNewEnemy():
     randy = random.randrange(0, height)
     try:
         dest = random.choice(flowers.sprites())
-        print(dest)
         return enemy.Enemy((randx, randy), dest)
-    except:
+    except Exception as e:
+        print(e)
         print("Flowers all gone")
 
 

@@ -21,7 +21,7 @@ class Enemy(pygame.sprite.Sprite):
         self.ani_r = ani_r
         self.ani_frame = 0
         self.ani_counter = 0
-        self.ani_speed
+        self.ani_speed = 10
         self.ani_max = len(ani_l) - 1
 
         # self.image = pygame.image.load('grass.png')
