@@ -26,6 +26,7 @@ class Flower(pygame.sprite.Sprite):
             self.rect.y = location[1]
     
     def hit(self, damage=1):
+        """ Deal damage to flower """
         self.life -= damage
         self.blink = True
         
@@ -34,6 +35,7 @@ class Flower(pygame.sprite.Sprite):
             del self
 
     def update(self):
+        """ Blink if taking damage """
         if self.blink:
             if self.blinkCounter < 10:
                 self.image = image_hit

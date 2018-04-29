@@ -9,7 +9,10 @@ from math import sqrt
 ''' GAME PROPERTIES '''
 size = width, height = 800, 800
 pygame.init()
-pygame.display.set_caption("This is a test")
+pygame.font.init()
+myfont = pygame.font.SysFont('Comic Sans MS', 30)
+
+pygame.display.set_caption("Farm Frenzy")
 clock = pygame.time.Clock()
 
 green = 0, 128, 0
@@ -30,6 +33,10 @@ def spawnNewEnemy():
         print(e)
         print("Flowers all gone")
 
+def increment_score(score:int):
+    score[0][0] += 10
+    # return(score[0] + 10)
+
 
 def main():
     """ Runs the game """
@@ -47,14 +54,21 @@ def main():
         for j in range(rows):
             flowers.add(flower.Flower((startx + j*flower.width, starty + i*flower.height)))
 
-    testTimer = timer(3.0, spawnNewEnemy)
+    score = [0]
+    spawner = timer(3.0, spawnNewEnemy)
+    scoreTimer = timer(1.0, increment_score, score)
+
     ''' MAIN LOOP '''
     while 1:
-        newObj = testTimer.update()
+        scoreTimer.update()
+        newObj = spawner.update()
         if newObj:
             enemies.add(newObj)
 
+        ''' Draw background and score '''
         screen.fill(green) # Draw background
+        textsurface = myfont.render('Score: {}'.format(score[0]), False, (0, 0, 0))
+        screen.blit(textsurface,(400,0))
 
         ''' EVENTS '''
         for event in pygame.event.get():
@@ -67,7 +81,7 @@ def main():
             if newObj:        # Store new player projectiles
                 friendlies.add(newObj)
         
-        ''' UPDATES '''
+        ''' UPDATES OBJECTS '''
         friendlies.update()
         enemies.update()
         flowers.update()
@@ -105,18 +119,22 @@ def main():
         clock.tick(60)          # Defines FPS/refresh time
 
 class timer:
-    def __init__(self, duration: float, fn):
+    def __init__(self, duration: float, fn, *args):
         self.currentTime = time.time()
         self.time = 0.0
         self.duration = duration
         self.fn = fn
+        self.args = args
     
     def update(self):
         self.time += time.time() - self.currentTime
         self.currentTime = time.time()
         if self.time >= self.duration:
             self.time %= self.duration
+            if self.args:
+                return self.fn(self.args)
             return self.fn()
+        return None
 
 if __name__ == "__main__":
     main()
