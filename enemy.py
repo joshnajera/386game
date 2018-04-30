@@ -29,6 +29,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = position[0]
         self.rect.y = position[1]
+        self.LR = 1 if (self.destiination.rect.x - self.rect.x) > 10 else -1
+        self.hasTarget = True
 
     def loadFrame(self, dir: chr):
         """ Set image based on frame and direction """
@@ -43,33 +45,33 @@ class Enemy(pygame.sprite.Sprite):
     
     def update(self):
         """ Move towards destination """ 
-        LR = 1 if (self.destiination.rect.x - self.rect.x) > 0 else -1
-        if abs(self.destiination.rect.x - self.rect.x) < 2:
-            LR = 0
         
         ''' Load next frame based off direction of movement '''
-        if LR == 1:
+        if self.LR == 1:
             self.image = self.loadFrame('r')
-        elif LR == -1:
+        elif self.LR == -1:
             self.image = self.loadFrame('l')
 
         UD = 1 if (self.destiination.rect.y - self.rect.y) > 0 else -1
         if abs(self.destiination.rect.y - self.rect.y) < 2:
             UD = 0
 
-        self.rect.x += LR*self.speed
+        if abs(self.rect.x - self.destiination.rect.x) > 2 or not self.hasTarget:
+            self.rect.x += self.LR*self.speed
         self.rect.y += UD*self.speed
          
-        if self.canAttack():
-            self.destiination.hit(self.damage)
-
+        if self.hasTarget and self.canAttack():
+            if self.destiination.hit(self.damage):
+                print("I killed a thing")
+                self.hasTarget = False
+        
         self.ani_counter = (self.ani_counter + 1) % self.ani_speed
         if self.ani_counter == self.ani_max:
             self.ani_frame = (self.ani_frame + 1) % len(self.ani_l)
     
     def canAttack(self):
         """ If within attacking distance and cooldown is off """
-        threshhold = 2
+        threshhold = 3
         dx = (self.rect.x - self.destiination.rect.x) ** 2
         dy = (self.rect.y - self.destiination.rect.y) ** 2
         dist = math.sqrt(dx + dy)

@@ -15,7 +15,7 @@ class Flower(pygame.sprite.Sprite):
 
     def __init__(self, location: (float, float)):
         pygame.sprite.Sprite.__init__(self)
-        self.life = 20
+        self.life = 10
         self.blink = False
         self.blinkCounter = 0
         self.image = image
@@ -33,6 +33,8 @@ class Flower(pygame.sprite.Sprite):
         if self.life <= 0:
             pygame.sprite.Sprite.kill(self)
             del self
+            return 1
+        return 0
 
     def update(self):
         """ Blink if taking damage """
