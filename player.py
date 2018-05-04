@@ -38,6 +38,8 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.loadFrame('l')
         self.rect = self.image.get_rect()
+        self.rect.x = 400
+        self.rect.y = 400
 
         # self.image = pygame.transform.scale(self.image, (self.width*self.scale, self.height*self.scale))
         # self.rect = self.rect.inflate((self.scale, self.scale))
