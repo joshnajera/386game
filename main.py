@@ -128,21 +128,6 @@ def main():
                     friendlies.remove(obj)
                     del obj
                     score[0] += 100
-            
-            # for obj in friendlies:
-            #     collision = pygame.sprite.spritecollideany(obj, flowers)
-            #     if not collision:
-            #         continue
-            #     if isinstance(obj, player.Player):
-            #         # obj.rect.move((-obj.speed[0], -obj.speed[1]))
-            #         obj.speed = list(map(lambda x: x*.5, obj.speed))
-
-            # for enemy in enemies:
-            #     collision = pygame.sprite.spritecollideany(enemy, flowers)
-            #     if not collision:
-            #         continue
-            #     collision.hit(enemy.damage)
-
 
             ''' Draw background and score '''
             screen.fill(green) # Draw background

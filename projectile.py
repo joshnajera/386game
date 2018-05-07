@@ -15,7 +15,7 @@ class Projectile(pygame.sprite.Sprite):
         """ Setup """
         pygame.sprite.Sprite.__init__(self)
         self.speed = 10
-        self.timeToLive = 1
+        self.timeToLive = .8
         self.initTime = time.time()
         self.image = pygame.image.load("turnip.png")
         scale = 2

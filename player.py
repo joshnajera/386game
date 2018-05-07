@@ -14,7 +14,7 @@ class Player(pygame.sprite.Sprite):
     """ Player character code """
 
     width, height = 800, 800
-    Scale = 5
+    Scale = 2
     def __init__(self, screen):
 
         pygame.sprite.Sprite.__init__(self)
@@ -25,14 +25,14 @@ class Player(pygame.sprite.Sprite):
         self.speed = [0,0]  # [X-axis, Y-axis]
         self.max_speed = 5
         self.scale = Player.Scale
-        self.acceleration = .3
+        self.acceleration = .4
         self.direction = direction.RIGHT
 
         self.ani_l = ani_l
         self.ani_r = ani_r
 
         self.ani_max = len(self.ani_l) - 1
-        self.ani_speed = 10
+        self.ani_speed = 8
         self.ani_counter = 0
         self.ani_frame = 0
 
@@ -97,7 +97,7 @@ class Player(pygame.sprite.Sprite):
             if self.speed[0] > self.max_speed:
                 self.speed[0] = self.max_speed
         if not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
-            self.speed[0] *= .9
+            self.speed[0] *= .75
         if abs(self.speed[0]) < 0.1:
             self.speed[0] = 0
 
@@ -110,7 +110,7 @@ class Player(pygame.sprite.Sprite):
             if self.speed[1] < -self.max_speed:
                 self.speed[1] = -self.max_speed
         if not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
-            self.speed[1] *= .9
+            self.speed[1] *= .75
         if abs(self.speed[1]) < 0.1:
             self.speed[1] = 0
 
